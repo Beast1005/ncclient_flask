@@ -26,6 +26,9 @@ def write_to_file(each_device,result):
             file.write(convert_to_pretty_config(result))
 
 def get_device_details(file_name):
+    """
+    This function will read file and create dictionary required for ncclient
+    """
     device_details_list=[]
     with open(file_name,"r") as file:
         for each_ip in file:
@@ -40,6 +43,9 @@ def get_device_details(file_name):
     return device_details_list
 
 def interface_list(device_details_list):
+    """
+    This function will print interface list
+    """
     interface_filter="""
     <filter>
         <interfaces-state xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces>
@@ -61,6 +67,9 @@ def interface_list(device_details_list):
     return "success"
 
 def interface_config(device_details_list,interface_details):
+    """
+    This function will configure interfaces on device
+    """
     for each_device in device_details_list:
         ssh = manager.connect(**each_device)
         for each_interface in interface_details:
@@ -86,4 +95,4 @@ def interface_config(device_details_list,interface_details):
             """
             print(payload)
             result=ssh.edit_config(payload,target="running")
-    return "success"
+    return "successfuly configured interfaces"
