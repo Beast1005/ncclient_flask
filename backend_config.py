@@ -3,16 +3,27 @@ from xml.dom.minidom import parseString
 import config
 
 def running_config(device_details_list):
+    """This function to pull config from list of devices
+
+    Args:
+        device_details_list ("string"): file name
+
+    Returns:
+        xml: creates file and return success
+    """
     for each_device in device_details_list:
         print(each_device)
         ssh=manager.connect(**each_device)
         result=ssh.get_config(source="running")
-        with open(each_device["host"],"w") as file:
-            file.write(convert_to_pretty_config(result))
+        write_to_file(each_device,result)
     return f"config taken for all devices"
 
 def convert_to_pretty_config(result):
     return parseString(result.xml).toprettyxml()
+
+def write_to_file(each_device,result):
+    with open(each_device["host"],"w") as file:
+            file.write(convert_to_pretty_config(result))
 
 def get_device_details(file_name):
     device_details_list=[]
@@ -37,6 +48,7 @@ def interface_list(device_details_list):
     </filter>
     """
     for each_device in device_details_list:
+        interfaces_list_on_device=[]
         with manager.connect(**each_device) as ssh:
             result = ssh.get(filter=('xpath', '/interfaces-state'))
             interfaces = result.data.xpath("//*[local-name()='interface']")
@@ -44,6 +56,8 @@ def interface_list(device_details_list):
             for interface in interfaces:
                 name = interface.find('.//{urn:ietf:params:xml:ns:yang:ietf-interfaces}name').text
                 print(f"- {name}")
+                interfaces_list_on_device.append(name)
+        write_to_file(each_device,interfaces_list_on_device)
     return "success"
 
 def interface_config(device_details_list,interface_details):
