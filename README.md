@@ -1,2 +1,1 @@
-# rest_conf
-Program to using restconf
+# Program to manage network devices with ncclient and restconf
