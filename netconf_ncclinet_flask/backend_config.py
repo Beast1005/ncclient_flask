@@ -102,13 +102,17 @@ def interface_config(device_details_list, interface_details):
         ssh = manager.connect(**each_device)
         for each_interface in interface_details:
             each_word = each_interface.split(",")
+            if each_word[4].lower()=="physical":
+                interface_type="ethernetCsmacd"
+            elif each_word[4].lower()=="loopback":
+                interface_type="SoftwareLoopback"
             payload = f"""
             <config>
             <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
                 <interface>
                     <name>{each_word[0]}</name>
                     <description>{each_word[3]}</description>
-                    <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:ethernetCsmacd</type>
+                    <type xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">ianaift:{interface_type}</type>
                     <enabled>true</enabled>
                     <ipv4 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
                         <address>
