@@ -6,6 +6,7 @@ This module contains functions for interacting with network devices using the nc
 from xml.dom.minidom import parseString
 from ncclient import manager
 import config
+from xmltodict import parse
 
 
 def running_config(device_details_list):
@@ -74,17 +75,26 @@ def interface_list(device_details_list):
     Returns:
         str: A message indicating success.
     """
+    int_filter="""
+    <filter>
+        <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+
+        </interfaces>
+    </filter>
+    """
     for each_device in device_details_list:
-        with manager.connect(**each_device) as ssh:
-            result = ssh.get(filter=("xpath", "/interfaces-state"))
-            interfaces = result.data.xpath("//*[local-name()='interface']")
-            print("List of Interfaces:")
-            for interface in interfaces:
-                name = interface.find(
-                    ".//{urn:ietf:params:xml:ns:yang:ietf-interfaces}name"
-                ).text
-                # print(f"- {name}")
-    return name
+        print(each_device)
+        ssh = manager.connect(**each_device)
+        result = ssh.get_config(filter=int_filter,source="running")
+        output=parse(result.xml)["rpc-reply"]["data"]["interfaces"]["interface"]
+        for each_interface in output:
+            try:
+                ip_add,mask=each_interface["ipv4"]["address"]["ip"],each_interface["ipv4"]["address"]["netmask"]
+                print(f"{each_interface['name']},ip address={ip_add},subnet_mask={mask}")
+            except:
+                print(f"{each_interface['name']} ip mask not configured")
+            
+    return output
 
 
 def interface_config(device_details_list, interface_details):
@@ -102,10 +112,10 @@ def interface_config(device_details_list, interface_details):
         ssh = manager.connect(**each_device)
         for each_interface in interface_details:
             each_word = each_interface.split(",")
-            if each_word[4].lower()=="physical":
+            if each_word[0].startswith("Gig"):
                 interface_type="ethernetCsmacd"
-            elif each_word[4].lower()=="loopback":
-                interface_type="SoftwareLoopback"
+            elif each_word[0].startswith("Loop"):
+                interface_type="softwareLoopback"
             payload = f"""
             <config>
             <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">

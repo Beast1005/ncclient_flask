@@ -18,6 +18,7 @@ def running_config():
         The result of running_config() from the backend_config module.
     """
     name_file = request.args["file_name"]
+    print(name_file)
     device_details_list = backend_config.get_device_details(name_file)
     result = backend_config.running_config(device_details_list)
     return result
