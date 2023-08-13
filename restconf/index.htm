@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create JSON File</title>
+</head>
+<body>
+    <h1>Create JSON File</h1>
+    <form id="jsonForm">
+        <label for="numInterfaces">Number of Interfaces:</label><br>
+        <input type="number" id="numInterfaces" name="numInterfaces" value="2"><br><br>
+
+        <div id="interfaceFields">
+            <!-- Interface 1 -->
+            <label for="name1">Interface 1 Name:</label><br>
+            <input type="text" id="name1" name="name1" value="Loopback1"><br>
+
+            <label for="ip1">Interface 1 IP Address:</label><br>
+            <input type="text" id="ip1" name="ip1" value="11.11.11.11"><br>
+
+            <label for="subnet1">Interface 1 Subnet Mask:</label><br>
+            <input type="text" id="subnet1" name="subnet1" value="255.255.255.0"><br>
+
+            <label for="desc1">Interface 1 Description:</label><br>
+            <input type="text" id="desc1" name="desc1" value="buss1_int"><br><br>
+
+            <!-- Interface 2 -->
+            <label for="name2">Interface 2 Name:</label><br>
+            <input type="text" id="name2" name="name2" value="GigabitEthernet0/3"><br>
+
+            <label for="ip2">Interface 2 IP Address:</label><br>
+            <input type="text" id="ip2" name="ip2" value="22.22.22.1"><br>
+
+            <label for="subnet2">Interface 2 Subnet Mask:</label><br>
+            <input type="text" id="subnet2" name="subnet2" value="255.255.255.0"><br>
+
+            <label for="desc2">Interface 2 Description:</label><br>
+            <input type="text" id="desc2" name="desc2" value="LAN Connection"><br><br>
+        </div>
+
+        <button type="button" id="generateBtn">Generate JSON File</button>
+    </form>
+    <p id="message"></p>
+
+    <script>
+        document.getElementById("generateBtn").addEventListener("click", function () {
+            var numInterfaces = document.getElementById("numInterfaces").value;
+            var jsonData = {
+                "number_of_interfaces": numInterfaces,
+            };
+
+            for (var i = 1; i <= numInterfaces; i++) {
+                var name = document.getElementById("name" + i).value;
+                var ip = document.getElementById("ip" + i).value;
+                var subnet = document.getElementById("subnet" + i).value;
+                var desc = document.getElementById("desc" + i).value;
+
+                jsonData["interface" + (i - 1)] = {
+                    "name": name,
+                    "ip_address": ip,
+                    "subnet_mask": subnet,
+                    "description": desc,
+                };
+            }
+
+            try {
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/generate_json", true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        document.getElementById("message").innerHTML = "JSON file has been generated on the server.";
+                    }
+                };
+                xhr.send(JSON.stringify({ json_data: jsonData }));
+            } catch (error) {
+                document.getElementById("message").innerHTML = "An error occurred. Please try again.";
+            }
+        });
+    </script>
+</body>
+</html>
