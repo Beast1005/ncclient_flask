@@ -1,8 +1,8 @@
 PORT=443
-# USERNAME="developer"
-# PASSWORD="lastorangerestoreball8876"
 USERNAME="admin"
-PASSWORD="cisco"
+PASSWORD="C1sco12345"
+# USERNAME="admin"
+# PASSWORD="cisco"
 ACCEPT_HEADER={
     'accept':'application/yang-data+json'
 }

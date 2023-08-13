@@ -24,6 +24,8 @@ def get_device_details():
     args = parser.parse_args()
     if args.operation.lower() == "take_backup":
         backend_config.take_backup(args.filename)
+    elif args.operation.lower()=="config_int":
+        backend_config.take_backup(args.filename)
 
 
 if __name__ == "__main__":

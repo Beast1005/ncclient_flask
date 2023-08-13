@@ -25,7 +25,7 @@ def take_backup(file_name):
     with open(file_name, "r",encoding="utf-8") as file:
         for each_line in file:
             # urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-            url = f"https://{each_line.strip()}:443/restconf/data/Cisco-IOS-XE-native:native"
+            url = f"https://{each_line.strip()}:443/restconf/data/ietf:interces:interfaces/"
             response = requests.get(
                 url,
                 headers=config.ACCEPT_HEADER,
