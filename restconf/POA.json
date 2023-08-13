@@ -1,0 +1,21 @@
+{
+    "number_of_interfaces": 3,
+    "interface0": {
+        "name": "Loopback22",
+        "ip_address": "22.11.11.11",
+        "subnet_mask": "255.255.255.0",
+        "description": "buss1_int"
+    },
+    "interface1": {
+        "name": "Loopback36",
+        "ip_address": "188.11.11.11",
+        "subnet_mask": "255.255.255.0",
+        "description": "buss1_int"
+    },
+    "interface2": {
+        "name": "GigabitEthernet3",
+        "ip_address": "198.11.11.11",
+        "subnet_mask": "255.255.255.0",
+        "description": "buss1_int"
+    }
+}

@@ -21,9 +21,16 @@ def get_device_details():
         help="Enter which operation need to be done. Refer readme for supported operations",
         type=str,
     )
+    parser.add_argument(
+        "--config",
+        help="share configuration file",
+        type=str,
+    )
     args = parser.parse_args()
     if args.operation.lower() == "take_backup":
         backend_config.take_backup(args.filename)
+    elif args.operation.lower()=="config_int":
+        backend_config.interface_config(args.filename,args.config)
 
 
 if __name__ == "__main__":
