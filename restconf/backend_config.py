@@ -77,7 +77,6 @@ def interface_config(file_name,input_data):
                     )
                     if response.status_code == 200:
                         print(f"response code={response.status_code}")
-                        headers = {'Content-Type': 'application/yang-data+json'}
                         response = requests.put(
                                 url,
                                 headers=CONTENT_TYPE_HEADER,
@@ -89,7 +88,6 @@ def interface_config(file_name,input_data):
                     elif response.status_code == 404:
                         print(f"response code={response.status_code}")
                         url=f"https://{each_line.strip()}:443/restconf/data/ietf-interfaces:interfaces"
-                        headers = {'Content-Type': 'application/yang-data+json'}
                         response = requests.post(
                                 url,
                                 headers=CONTENT_TYPE_HEADER,
